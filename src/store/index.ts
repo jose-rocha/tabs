@@ -8,7 +8,9 @@ import {
 
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state';
+import tabs from './modules-tabs';
 
+import { TabsStateInterface } from './modules-tabs/state';
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -23,6 +25,7 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   example: unknown
+  tabs: TabsStateInterface;
 }
 
 // provide typings for `this.$store`
@@ -39,6 +42,7 @@ export default store((/* { ssrContext } */) => {
   const Store = createStore<StateInterface>({
     modules: {
       // example
+      tabs,
     },
 
     // enable strict mode (adds overhead!)

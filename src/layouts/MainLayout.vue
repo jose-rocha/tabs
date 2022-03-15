@@ -9,10 +9,11 @@
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
+          v-if="$q.screen.gt.xs"
         />
 
         <q-toolbar-title>
-          Quasar Filipes
+          Quasar Tabs
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -23,20 +24,49 @@
       v-model="leftDrawerOpen"
       bordered
       class="bg-white"
-      behavior="mobile"
+      show-if-above
     >
       <q-list>
         <q-item-label
           header
         >
-          Essential Links
+          Links Tabs
         </q-item-label>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-tabs
+            v-model="setTabs"
+            narrow-indicator
+            align="justify"
+            active-color="red"
+            indicator-color="blue"
+            vertical
+          >
+            <q-tab  name="mails">
+              <div class="flex items-center"
+                   style="justify-content: center; width: 300px;
+                   height: 100%; padding-right: 80px;"
+              >
+                <q-icon name="mail" size="2rem" class="q-mr-xl"/>
+                <div>Mails</div>
+              </div>
+            </q-tab>
+            <q-tab  name="alarms" >
+              <div class="flex items-center"
+                   style="justify-content: center; width: 300px;
+                   height: 100%; padding-right: 70px;">
+              <q-icon name="alarm"  size="2rem" class="q-mr-xl"/>
+              <div>Alarms</div>
+              </div>
+            </q-tab>
+            <q-tab  name="movies" >
+              <div class="flex items-center"
+                   style="justify-content: center; width: 300px;
+                   height: 100%; padding-right: 70px;">
+                   <q-icon name="movie"  size="2rem" class="q-mr-xl"/>
+                   <div>Movies</div>
+              </div>
+            </q-tab>
+          </q-tabs>
       </q-list>
     </q-drawer>
 
@@ -47,71 +77,28 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from 'components/EssentialLink.vue';
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
-  },
-];
-
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, computed } from 'vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
   name: 'MainLayout',
 
-  components: {
-    EssentialLink,
-  },
-
   setup() {
     const leftDrawerOpen = ref(false);
+    const store = useStore();
+    const setTabs = computed({
+      get: () => store.state.tabs.preferenceState,
+      set: (value) => { store.commit('tabs/setTabs', value); },
+    });
 
     return {
-      essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      tab: ref('movies'),
+      setTabs,
     };
   },
 });
